@@ -14,7 +14,7 @@
         <x-forms.input label='URl' name='url' placeholder="example.com" required></x-forms.input>
         <x-forms.divider />
         <x-forms.input label='Tags' name='tags' placeholder="CEO, Web, ETC"></x-forms.input>
-        <x-forms.checkbox label='Feature On Main Page?' name='feature' />
+        <x-forms.checkbox label='Feature On Main Page?' name='featured' />
         <x-forms.divider />
 
         <x-forms.button>Create Job Listing</x-forms.button>

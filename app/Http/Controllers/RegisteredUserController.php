@@ -30,7 +30,7 @@ class RegisteredUserController extends Controller
         ]);
         $EmployerAttributes = $request->validate([
             'employer' => ['required'],
-            'logo' => ['required', File::types(['png', 'jpg', 'svg'])],
+            'logo' => ['required', 'max:1', File::types(['png', 'jpg', 'svg'])],
         ]);
 
 

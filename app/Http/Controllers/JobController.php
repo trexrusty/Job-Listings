@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use App\Models\Job;
 use App\Models\Tag;
@@ -16,12 +18,23 @@ class JobController extends Controller
      */
     public function index()
     {
-        $jobs = Job::latest()->with(['employer', 'tags'])->get()->groupBy('featured');
+        $jobs = Job::latest()->with(['employer', 'tags'])->get();
+
+        $featuredJobs = $jobs->where('featured', true);
+        $regularJobs = $jobs->where('featured', false);
+
+        $perPage = 2;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $regularJobs->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $paginatedJobs = new LengthAwarePaginator($currentPageItems, $regularJobs->count(), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath()
+        ]);
 
         return view('jobs.index', [
-            'featuredJobs' => $jobs->has(0) ? $jobs[0] : collect(),
-            'jobs' => $jobs->has(1) ? $jobs[1] : collect(),
+            'featuredJobs' => $featuredJobs,
+            'jobs' => $paginatedJobs,
             'tags' => Tag::all(),
+            'paginator' => $paginatedJobs,
         ]);
     }
 
